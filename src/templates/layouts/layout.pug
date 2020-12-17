@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title Chat
+        - var publicPath = "../../public/"
+        link(rel="stylesheet", href=publicPath+"plugins/layui/css/layui.css")
+        block css
+    body
+        .layui-fluid.kl-kelvin
+            .layui-row.kl-header
+                block header
+            .layui-row.kl-body
+                block body
+            .layui-row.kl-footer
+                block footer
+        script(src=publicPath+"plugins/layui/layui.js")
+        block script
