@@ -1,0 +1,50 @@
+.kl-kelvin {
+  height: 100%;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.kl-kelvin .kl-header {
+  flex: 0 0 27rem;
+}
+.kl-kelvin .kl-body {
+  flex: 1 0 auto;
+}
+.kl-header .kl-header-menu {
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.kl-header .kl-header-menu .left {
+  padding-left: 10rem;
+  line-height: 27rem;
+  color: #999;
+}
+.kl-header .kl-header-menu .right {
+  display: flex;
+  justify-content: flex-end;
+}
+.kl-header .kl-header-menu .right .icon {
+  padding: 0 12rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.kl-header .kl-header-menu .right .icon:hover {
+  background-color: #FF5722;
+  color: white;
+}
+.kl-header .kl-header-menu .right .icon i {
+  font-size: 12rem;
+}
+.kl-body .kl-login {
+  padding: 20rem 30rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.kl-login-form .kl-login-sumbit {
+  margin-top: 35rem;
+}

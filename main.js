@@ -1,22 +1,9 @@
 const { app, BrowserWindow } = require('electron')
-const path = require('path')
+var router = require("./src/routers/router")
 
-var viewsPath = __dirname+"/src/views/"
-
-function createWindow () {
-    const win = new BrowserWindow({
-        width: 800,
-        height: 600,
-        webPreferences: {
-            nodeIntegration: true,
-            preload: path.join(__dirname, 'preload.js'),
-        }
-    })
-
-    win.loadFile(viewsPath+"login.html")
-}
-
-app.whenReady().then(createWindow)
+app.whenReady().then(() => {
+    router.createWindow()
+})
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
@@ -26,6 +13,6 @@ app.on('window-all-closed', () => {
 
 app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
-        createWindow()
+        router.createWindow()
     }
 })

@@ -1,15 +1,27 @@
 extends ./layouts/layout.pug
 
+block css
+    link(rel="stylesheet", href=publicPath+"css/login.css")
+
+block header
+    div.layui-col-md12.kl-header-menu
+        div.left
+            span Kelvin
+        div.right
+            div.icon
+                <i class="layui-icon layui-icon-set-sm"></i> 
+            div.icon#close
+                <i class="layui-icon layui-icon-close"></i>
+
 block body
-    div.layui-col-col-md12
-        form.layui-form(action="", method="post")
+    div.layui-col-md12.kl-login
+        form.layui-form.kl-login-form#login-form(action="", method="post")
             .layui-form-item
-                //- label.layui-form-item(for="")
-                //- .layui-input-block
-                input.layui-input(type="text", name="username")    
+                input.layui-input(type="text", name="username" placeholder="用户名")    
             .layui-form-item
-                //- label.layui-form-item(for="")
-                //- .layui-input-block
-                input.layui-input(type="text", name="username")
-            .layui-form-item
-                button.layui-btn.layui-btn-fluid() 登录
+                input.layui-input(type="password", name="password" placeholder="密码")
+            .layui-form-item.kl-login-sumbit
+                input.layui-btn.layui-btn-lg.layui-btn-fluid(type="submit", value="登录")
+
+block script
+    script(src=appPath+"controllers/login.js")
