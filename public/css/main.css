@@ -1,0 +1,111 @@
+.kl-kelvin {
+  height: 100%;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.kl-kelvin .kl-body {
+  flex: 1 0 auto;
+  display: flex;
+}
+.kl-body-user {
+  flex: 0 0 280rem;
+  display: flex;
+  flex-direction: column;
+  background-color: #E2E2E2;
+  height: 100%;
+}
+.kl-body-user .content {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+.kl-body-user .content .content-box {
+  flex: 1 0 auto;
+  height: 100rem;
+  overflow: hidden;
+}
+.kl-body-user .content .content-box ul li.user-brief {
+  height: 45rem;
+  padding: 10rem 10rem;
+  display: flex;
+}
+.kl-body-user .content .content-box ul li.user-brief .user-avatar {
+  height: 100%;
+  flex: 0 0 40rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.kl-body-user .content .content-box ul li.user-brief .user-avatar img {
+  width: 100%;
+}
+.kl-body-user .content .content-box ul li.user-brief .user-info {
+  flex: 1 0 auto;
+  padding-left: 8rem;
+  display: flex;
+  flex-direction: column;
+  font-size: 12rem;
+  color: #999;
+}
+.kl-body-user .content .content-box ul li.user-brief .user-info .info-title {
+  flex: 1 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.kl-body-user .content .content-box ul li.user-brief .user-info .info-title .title-name {
+  font-size: 16rem;
+  color: black;
+}
+.kl-body-user .content .content-box ul li.user-brief .user-info .info-msg {
+  flex: 1 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.kl-body-user .content .content-box ul li.user-brief:hover {
+  background-color: #d2d2d2;
+}
+.kl-body-msg {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  background-color: #F2F2F2;
+  height: 100%;
+}
+.kl-body-msg .header {
+  flex: 0 0 27rem;
+}
+.kl-body-msg .header .header-menu {
+  height: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+.kl-body-msg .header .header-menu .menu-right {
+  display: flex;
+  justify-content: flex-end;
+}
+.kl-body-msg .content {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+.kl-body-msg .content .content-title {
+  flex: 0 0 35rem;
+  padding-left: 30rem;
+}
+.kl-body-msg .content .content-title .title-name {
+  font-size: 18rem;
+}
+.kl-body-msg .content .content-msg {
+  padding-left: 30rem;
+  flex: 1 0 auto;
+  border-top: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
+}
+.kl-body-msg .content .content-edit {
+  padding-left: 30rem;
+  flex: 0 0 145rem;
+  background-color: #FFFFFF;
+}

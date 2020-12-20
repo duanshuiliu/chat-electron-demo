@@ -1,4 +1,40 @@
 extends ./layouts/layout.pug
 
+block css
+    link(rel="stylesheet", href=publicPath+"css/main.css")
+
 block body
-    h1 Hello world
+    div.layui-col-xs1.kl-body-user
+        div.layui-row.header
+        div.layui-row.content
+            div.layui-col-xs12.content-box
+                - var n = 10;
+                ul
+                    while n > 0
+                        li.user-brief(data-id=n--+'-kl')
+                            div.user-avatar
+                                img(src=publicPath+"img/avatar-1.jpeg", alt="avatar", srcset="")
+                            div.user-info
+                                div.info-title
+                                    span.title-name 蔡力文
+                                    span.title-time 19:30
+                                div.info-msg
+                                    p hello world
+    div.layui-col-xs1.kl-body-msg
+        div.layui-row.header
+            div.layui-col-xs12.header-menu
+                div.menu-right
+                    div.icon#win-toggle-top
+                        <i class="layui-icon layui-icon-top"></i>
+                    div.icon#win-min
+                        <i class="layui-icon layui-icon-subtraction"></i>
+                    div.icon#win-toggle-max
+                        <i class="layui-icon layui-icon-screen-full"></i> 
+                    div.icon#win-close
+                        <i class="layui-icon layui-icon-close"></i>
+
+        div.layui-row.content
+            div.layui-col-xs12.content-title
+                h1.title-name 夭夭
+            div.layui-col-xs12.content-msg
+            div.layui-col-xs12.content-edit

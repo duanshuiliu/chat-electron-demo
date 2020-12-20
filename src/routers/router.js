@@ -7,7 +7,8 @@ var viewsPath = appPath+"src/views/"
 ipcMain.on("jump", (event, page, command) => {
     switch (page) {
         case "main":
-            createWindow("main", 800, 600);
+            // createWindow("main", 1063, 738);
+            createWindow("main", 850, 580);
             break;
         default:
             createWindow();
@@ -25,9 +26,28 @@ ipcMain.on("jump", (event, page, command) => {
     event.returnValue = "go"
 })
 
-ipcMain.on("close", (event) => {
-    var win = BrowserWindow.fromId(event.frameId)
-    win.close()
+ipcMain.on("window", (event, command) => {
+    var win = BrowserWindow.fromId(event.sender.id)
+    console.log(win)
+    
+    switch (command) {
+        case 'close':
+            win.close()
+            break;
+        case 'min':
+            win.minimize();
+            break;
+        case 'toggle-max':
+            if (win.isMaximized()) {
+                win.restore();
+            } else {
+                win.maximize();
+            }
+            break;
+        case 'toggle-top':
+            win.setAlwaysOnTop(!win.isAlwaysOnTop());
+            break;
+    }
 })
 
 /**
