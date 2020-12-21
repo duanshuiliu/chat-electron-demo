@@ -8,18 +8,21 @@ block body
         div.layui-row.header
         div.layui-row.content
             div.layui-col-xs12.content-box
-                - var n = 10;
-                ul
-                    while n > 0
-                        li.user-brief(data-id=n--+'-kl')
+                - var n = 1;
+                ul#user-container
+                    while n < 10
+                        - var name = "蔡力文"+n;
+                        - var msg  = "hello world "+n;
+                        - var uid  = n++;
+                        li.user-brief(data-uid=uid data-name=name)
                             div.user-avatar
                                 img(src=publicPath+"img/avatar-1.jpeg", alt="avatar", srcset="")
                             div.user-info
                                 div.info-title
-                                    span.title-name 蔡力文
+                                    span.title-name #{name}
                                     span.title-time 19:30
                                 div.info-msg
-                                    p hello world
+                                    p #{msg}
     div.layui-col-xs1.kl-body-msg
         div.layui-row.header
             div.layui-col-xs12.header-menu
@@ -37,8 +40,11 @@ block body
                         <i class="iconfont icon-close"></i>
                         //- <i class="layui-icon layui-icon-close"></i>
 
-        div.layui-row.content
+        div.layui-row.content#msg-container
             div.layui-col-xs12.content-title
                 h1.title-name 夭夭
             div.layui-col-xs12.content-msg
             div.layui-col-xs12.content-edit
+
+block script
+    script(src=appPath+"controllers/main.js")
