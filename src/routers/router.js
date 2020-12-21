@@ -22,13 +22,12 @@ ipcMain.on("jump", (event, page, command) => {
             break;
     }
 
-    
     event.returnValue = "go"
 })
 
 ipcMain.on("window", (event, command) => {
     var win = BrowserWindow.fromId(event.sender.id)
-    console.log(win)
+    // console.log(win)
     
     switch (command) {
         case 'close':
