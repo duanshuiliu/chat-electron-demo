@@ -5,7 +5,6 @@ $("#user-container li").click(function() {
     let uid  = $target.attr("data-uid");
     let name = $target.attr("data-name");
 
-    console.log($target, $(this));
-
+    $target.addClass("user-brief-bgcolor").siblings().removeClass("user-brief-bgcolor");
     $msgContainer.find(".title-name").text(name);
 });

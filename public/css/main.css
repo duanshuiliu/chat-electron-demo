@@ -16,6 +16,9 @@
   height: 100%;
   user-select: none;
 }
+.kl-body-user .user-brief-bgcolor {
+  background-color: #c2c2c2 !important;
+}
 .kl-body-user .content {
   flex: 1 0 auto;
   display: flex;
@@ -24,7 +27,10 @@
 .kl-body-user .content .content-box {
   flex: 1 0 auto;
   height: 100rem;
-  overflow: hidden;
+}
+.kl-body-user .content .content-box ul {
+  height: 100%;
+  overflow-y: scroll;
 }
 .kl-body-user .content .content-box ul li.user-brief {
   height: 45rem;
@@ -68,6 +74,24 @@
 .kl-body-user .content .content-box ul li.user-brief:hover {
   background-color: #d2d2d2;
 }
+.kl-body-user .content .content-box ul::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.kl-body-user .content .content-box ul::-webkit-scrollbar-track {
+  border-radius: 999px;
+  border: 6px solid #E2E2E2;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2) inset;
+}
+.kl-body-user .content .content-box ul::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  border: 6px solid #c2c2c2;
+  background-clip: content-box;
+  box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.2) inset;
+}
+.kl-body-user .content .content-box ul::-webkit-scrollbar-corner {
+  background: transparent;
+}
 .kl-body-msg {
   flex: 1 0 auto;
   display: flex;
@@ -100,13 +124,116 @@
   font-size: 18rem;
 }
 .kl-body-msg .content .content-msg {
-  padding-left: 30rem;
   flex: 1 0 auto;
+  height: 100rem;
   border-top: 1px solid #dddddd;
   border-bottom: 1px solid #dddddd;
 }
+.kl-body-msg .content .content-msg .content-msg-word {
+  height: 100%;
+  padding: 10rem 10rem 10rem 30rem;
+  overflow-y: scroll;
+}
+.kl-body-msg .content .content-msg .content-msg-word .msg-detail {
+  margin-top: 10rem;
+  margin-bottom: 14rem;
+  display: flex;
+  justify-content: flex-start;
+}
+.kl-body-msg .content .content-msg .content-msg-word .msg-detail .msg-detail-avatar {
+  width: 40rem;
+  height: 40rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.kl-body-msg .content .content-msg .content-msg-word .msg-detail .msg-detail-avatar img {
+  width: 100%;
+}
+.kl-body-msg .content .content-msg .content-msg-word .msg-detail .msg-detail-info {
+  margin-left: 15rem;
+  display: flex;
+  flex-direction: column;
+}
+.kl-body-msg .content .content-msg .content-msg-word .msg-detail .msg-detail-info .info-title {
+  font-size: 12rem;
+  color: #c2c2c2;
+  margin-bottom: 4rem;
+}
+.kl-body-msg .content .content-msg .content-msg-word .msg-detail .msg-detail-info .info-title .time {
+  margin-left: 10rem;
+}
+.kl-body-msg .content .content-msg .content-msg-word .msg-detail .msg-detail-info .info-content {
+  display: flex;
+}
+.kl-body-msg .content .content-msg .content-msg-word .msg-detail .msg-detail-info .info-content .word {
+  font-size: 14rem;
+  color: #000;
+  padding: 8rem 15rem;
+  background-color: #c2c2c2;
+  border-radius: 2px;
+}
+.kl-body-msg .content .content-msg .content-msg-word .msg-detail.right {
+  justify-content: flex-end;
+  padding-right: 30rem;
+}
+.kl-body-msg .content .content-msg .content-msg-word .msg-detail.right .msg-detail-avatar {
+  order: 1;
+}
+.kl-body-msg .content .content-msg .content-msg-word .msg-detail.right .msg-detail-info {
+  order: 0;
+  margin-left: 0;
+  margin-right: 15rem;
+}
+.kl-body-msg .content .content-msg .content-msg-word .msg-detail.right .msg-detail-info .info-content {
+  justify-content: flex-end;
+}
+.kl-body-msg .content .content-msg .content-msg-word .msg-detail.right .msg-detail-info .info-content .word {
+  background-color: #5FB878;
+  color: #FFFFFF;
+}
+.kl-body-msg .content .content-msg .content-msg-word::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.kl-body-msg .content .content-msg .content-msg-word::-webkit-scrollbar-track {
+  border-radius: 999px;
+  border: 6px solid #F2F2F2;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2) inset;
+}
+.kl-body-msg .content .content-msg .content-msg-word::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  border: 6px solid #c2c2c2;
+  background-clip: content-box;
+  box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.2) inset;
+}
+.kl-body-msg .content .content-msg .content-msg-word::-webkit-scrollbar-corner {
+  background: transparent;
+}
 .kl-body-msg .content .content-edit {
-  padding-left: 30rem;
   flex: 0 0 145rem;
   background-color: #FFFFFF;
+  color: #000;
+  display: flex;
+  flex-direction: column;
+}
+.kl-body-msg .content .content-edit .content-edit-word {
+  flex: 1 0 auto;
+  padding: 15rem 20rem 15rem 30rem;
+  height: 10rem;
+  outline: none;
+  overflow: hidden;
+}
+.kl-body-msg .content .content-edit .content-edit-submit {
+  flex: 0 0 35rem;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  padding-bottom: 8rem;
+  padding-right: 20rem;
+}
+.kl-body-msg .content .content-edit .content-edit-submit button {
+  padding-left: 15rem;
+  padding-right: 15rem;
+  font-size: 14rem;
 }
