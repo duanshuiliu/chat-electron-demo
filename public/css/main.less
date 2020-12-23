@@ -30,7 +30,7 @@
     }
 
     .header {
-        // 
+        flex: 0 0 40rem;
     }
 
     .content {
@@ -146,150 +146,159 @@
 
     .content {
         flex: 1 0 auto;
-        display: flex;
-        flex-direction: column;
 
-        .content-title {
-            flex: 0 0 35rem;
-            padding-left: @msgPadding;
+        .msg-chatroom {
+            height: 100%;
+            display: none;
 
-            .title-name {
-                font-size: 18rem;
-            }
-        }
-
-        .content-msg {
-            flex: 1 0 auto;
-            height: 100rem;
-            border-top: 1px solid #dddddd;
-            border-bottom: 1px solid #dddddd;
-
-            .content-msg-word {
+            .msg-chatroom-content {
                 height: 100%;
-                padding: 10rem 10rem 10rem @msgPadding;
-                overflow-y: scroll;
-                
-                .msg-detail {
-                    margin-top: 10rem;
-                    margin-bottom: 14rem;
-                    display: flex;
-                    justify-content: flex-start;
-
-                    .msg-detail-avatar {
-                        width: 40rem;
-                        height: 40rem;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-    
-                        img {
-                            width: 100%;
-                        }
-                    }
-
-                    .msg-detail-info {
-                        margin-left: 15rem;
-                        display: flex;
-                        flex-direction: column;
-
-                        .info-title {
-                            font-size: 12rem;
-                            color: #c2c2c2;
-                            margin-bottom: 4rem;
-
-                            .time {
-                                margin-left: 10rem;
-                            }
-                        }
-                        .info-content {
-                            display: flex;
-                            
-                            .word {
-                                font-size: 14rem;
-                                color: #000;
-                                padding: 8rem 15rem;
-                                background-color: #c2c2c2;
-                                border-radius: 2px;
-                            }
-                        }
-                    }
-                }
-                .msg-detail.right {
-                    justify-content: flex-end;
-                    padding-right: 30rem;
-
-                    .msg-detail-avatar {
-                        order: 1;
-                    }
-                    
-                    .msg-detail-info {
-                        order: 0;
-                        margin-left: 0;
-                        margin-right: 15rem;
-
-                        .info-content {
-                            justify-content: flex-end;
-
-                            .word {
-                                background-color: #5FB878;
-                                color: #FFFFFF;
-                            }
-                        }
-                    }
-                }
-            }
-
-            .content-msg-word::-webkit-scrollbar {
-                width: 6px;
-                height: 6px;
-            }
-            .content-msg-word::-webkit-scrollbar-track {
-                border-radius: 999px;
-                border: 6px solid @msgBgColor;
-                box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2) inset;
-            }
-            .content-msg-word::-webkit-scrollbar-thumb {
-                border-radius: 999px;
-                border: 6px solid #c2c2c2;
-                background-clip: content-box;
-                box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.2) inset;
-            }
-            .content-msg-word::-webkit-scrollbar-corner {
-                background: transparent;
-            }
-        }
-
-        .content-edit {
-            flex: 0 0 145rem;
-            background-color: #FFFFFF;
-            color: #000;
-            display: flex;
-            flex-direction: column;
-
-            .content-edit-toolbar {
-                // flex: 0 0 35rem;
-            }
-
-            .content-edit-word {
-                flex: 1 0 auto;
-                padding: 15rem 20rem 15rem @msgPadding; 
-                height: 10rem;
-                outline: none;
-                overflow: hidden;
-            }
-
-            .content-edit-submit {
-                flex: 0 0 35rem;
                 display: flex;
-                justify-content: flex-end;
-                align-items: flex-end;
-                padding-bottom: 8rem;
-                padding-right: 20rem;
+                flex-direction: column;
 
-                button {
-                    padding-left: 15rem;
-                    padding-right: 15rem;
-                    font-size: 14rem;
+                .content-title {
+                    flex: 0 0 35rem;
+                    padding-left: @msgPadding;
+        
+                    .title-name {
+                        font-size: 18rem;
+                    }
+                }
+        
+                .content-msg {
+                    flex: 1 0 auto;
+                    height: 100rem;
+                    border-top: 1px solid #dddddd;
+                    border-bottom: 1px solid #dddddd;
+        
+                    .content-msg-word {
+                        height: 100%;
+                        padding: 0 10rem 0 @msgPadding;
+                        overflow-y: scroll;
+                        
+                        .msg-detail {
+                            margin-top: 10rem;
+                            margin-bottom: 14rem;
+                            display: flex;
+                            justify-content: flex-start;
+        
+                            .msg-detail-avatar {
+                                width: 40rem;
+                                height: 40rem;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+            
+                                img {
+                                    width: 100%;
+                                }
+                            }
+        
+                            .msg-detail-info {
+                                margin-left: 15rem;
+                                display: flex;
+                                flex-direction: column;
+        
+                                .info-title {
+                                    font-size: 12rem;
+                                    color: #c2c2c2;
+                                    margin-bottom: 4rem;
+        
+                                    .time {
+                                        margin-left: 10rem;
+                                    }
+                                }
+                                .info-content {
+                                    display: flex;
+                                    
+                                    .word {
+                                        font-size: 14rem;
+                                        color: #000;
+                                        padding: 8rem 15rem;
+                                        background-color: #c2c2c2;
+                                        border-radius: 2px;
+                                    }
+                                }
+                            }
+                        }
+                        .msg-detail.right {
+                            justify-content: flex-end;
+                            padding-right: 20rem;
+        
+                            .msg-detail-avatar {
+                                order: 1;
+                            }
+                            
+                            .msg-detail-info {
+                                order: 0;
+                                margin-left: 0;
+                                margin-right: 15rem;
+        
+                                .info-content {
+                                    justify-content: flex-end;
+        
+                                    .word {
+                                        background-color: #5FB878;
+                                        color: #FFFFFF;
+                                    }
+                                }
+                            }
+                        }
+                    }
+        
+                    .content-msg-word::-webkit-scrollbar {
+                        width: 6px;
+                        height: 6px;
+                    }
+                    .content-msg-word::-webkit-scrollbar-track {
+                        border-radius: 999px;
+                        border: 6px solid @msgBgColor;
+                        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2) inset;
+                    }
+                    .content-msg-word::-webkit-scrollbar-thumb {
+                        border-radius: 999px;
+                        border: 6px solid #c2c2c2;
+                        background-clip: content-box;
+                        box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.2) inset;
+                    }
+                    .content-msg-word::-webkit-scrollbar-corner {
+                        background: transparent;
+                    }
+                }
+        
+                .content-edit {
+                    flex: 0 0 145rem;
+                    background-color: #FFFFFF;
+                    color: #000;
+                    display: flex;
+                    flex-direction: column;
+        
+                    .content-edit-toolbar {
+                        // flex: 0 0 35rem;
+                    }
+        
+                    .content-edit-word {
+                        flex: 1 0 auto;
+                        padding: 15rem 20rem 15rem @msgPadding; 
+                        height: 10rem;
+                        outline: none;
+                        overflow: hidden;
+                    }
+        
+                    .content-edit-submit {
+                        flex: 0 0 35rem;
+                        display: flex;
+                        justify-content: flex-end;
+                        align-items: flex-end;
+                        padding-bottom: 8rem;
+                        padding-right: 20rem;
+        
+                        button {
+                            padding-left: 15rem;
+                            padding-right: 15rem;
+                            font-size: 14rem;
+                        }
+                    }
                 }
             }
         }

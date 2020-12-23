@@ -10,18 +10,16 @@ block header
         div.right
             div.icon#win-setting
                 <i class="iconfont icon-setting"></i>
-                //- <i class="layui-icon layui-icon-set-sm"></i> 
             div.icon#win-close
                 <i class="iconfont icon-close"></i>
-                //- <i class="layui-icon layui-icon-close"></i>
 
 block body
     div.layui-col-md12.kl-login
         form.layui-form.kl-login-form#login-form(action="", method="post")
             .layui-form-item
-                input.layui-input(type="text", name="username" placeholder="用户名")    
+                input.layui-input(type="text", name="username" placeholder="用户名" required)
             .layui-form-item
-                input.layui-input(type="password", name="password" placeholder="密码")
+                input.layui-input(type="password", name="password" placeholder="密码" required)
             .layui-form-item.kl-login-sumbit
                 input.layui-btn.layui-btn-lg.layui-btn-fluid(type="submit", value="登录")
 

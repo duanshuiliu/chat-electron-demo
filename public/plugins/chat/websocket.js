@@ -3,9 +3,9 @@
         this.$element = ele;
         this.defaults = {
             'userId': 1,
-            'websocketUrl' : 'ws://140.143.30.113:13000/chat',
-            'websocketClient': null,
             'username': '',
+            'websocketUrl' : 'ws://192.168.92.32:13000/chat',
+            'websocketClient': null,
             'max': 2000,
         };
 
@@ -42,13 +42,21 @@
 
                     ws.onclose = function(){
                         _.options.websocketClient = null;
-                        layer.alert("服务器连接关闭");
+
+                        layui.use('layer', function(){
+                            layer = layui.layer;
+                            layer.alert("服务器连接关闭");
+                        });
                     };
 
                     ws.onerror=function(event){
                         _.options.websocketClient = null;
-                        layer.alert("服务器连接关闭");
                         console.log("websocket连接失败", event);
+
+                        layui.use('layer', function(){
+                            layer = layui.layer;
+                            layer.alert("服务器连接关闭");
+                        });
                     }
                 } else {
                     reject("您的浏览器不支持 WebSocket!");
@@ -59,22 +67,22 @@
         this.sendMessage = function(content, type = 10001, kind = 1) {
             let sendMsg = {};
             sendMsg.type = type;
-            sendMsg.Kind = kind;
-            sendMsg.Data = content;
+            sendMsg.kind = kind;
+            sendMsg.data = content;
             
             _.options.websocketClient.send(JSON.stringify(sendMsg));
         }
         // 消息处理
         this.handleMessage = function(msg) {
+            console.log(msg);
             switch (msg.type) {
-                // 注册成功
+                // 注册
                 case 10000:
-                    // 1. 拉取用户列表
                     _.users(msg.data["users"]);
                     break;
                 // 私聊
                 case 10001:
-                    _.users(msg)
+                    _.privateMsg(msg.data);
                     break;
             }
         };
@@ -84,17 +92,22 @@
             $container.children().remove();
 
             for(var i in users) {
-                let html = _.templateOfUser(users[i]);
-                $container.append(html);
+                if (users[i].id != _.options.userId) {
+                    let html = _.templateOfUser(users[i]);
+                    $container.append(html);
+                }
             }
         };
         // 消息渲染
-        this.messages = function() {
-            // 
+        this.privateMsg = function(msg) {
+            let $cotnainer = $("#msg-container");
+
+            let html = _.templateOfPrivateMsg(msg);
+            $cotnainer.find(".chatroom-2-"+msg.chat_id).find(".content-msg-word").append(html);
         };
         // 模板 - 用户
         this.templateOfUser = function(data) {
-            return '<li class="user-brief" data-id="'+data.id+'">'+
+            return '<li class="user-brief" data-chat-id="'+data.id+'" data-chat-type="2">'+
                 '<div class="user-avatar">'+
                     '<img src="../../public/img/avatar-1.jpeg" alt="avatar" srcset=""/>'+
                 '</div>'+
@@ -107,65 +120,61 @@
                         '<p>hello world 1</p>'+
                     '</div>'+
                 '</div>'+
-            '</li>'; 
+            '</li>';
         };
-        // 模板 - 消息
-        this.templateOfMsg = function(msg) {
-            let channelName = '';
-            if (_.options.channels.hasOwnProperty(chatMsg.channel)) {
-                channelName = _.options.channels[chatMsg.channel];
-            }
+        // 模板 - 私聊消息
+        this.templateOfPrivateMsg = function(msg) {
+            let time       = '';
+            let senderId   = 0;
+            let senderName = '';
+            let content    = '';
 
-            let serverName = '';
-            if (_.options.servers.hasOwnProperty(chatMsg.spid) && _.options.servers[chatMsg.spid].hasOwnProperty(chatMsg.sid)) {
-                serverName = _.options.servers[chatMsg.spid][chatMsg.sid].name+'-';
-            }
+            if (msg.hasOwnProperty("time")) time = msg.time;
+            if (msg.hasOwnProperty("sender_id")) senderId = msg.sender_id;
+            if (msg.hasOwnProperty("sender_name")) senderName = msg.sender_name;
+            if (msg.hasOwnProperty("content")) content = msg.content;
 
-            let html = '';
-            switch (chatMsg.channel) {
-                case 4:
-                    if (type == 'pull') {
-                        html = '<li class="chat-'+chatMsg.channel+'" data-ip="'+chatMsg.ip_addr+'">'
-                            +'<span class="time">['+_.formatDate(chatMsg.add_time, 'time')+']</span>'
-                            +'<span class="sp" data-spid="'+chatMsg.spid+'">['+chatMsg.spid+']</span>'
-                            // +'<span class="server" data-server="'+chatMsg.sid+'">['+serverName+chatMsg.sid+']</span>'
-                            +'<span class="server" data-server="'+chatMsg.sid+'">['+chatMsg.sid+']</span>'
-                            +'<span class="channel-'+chatMsg.channel+'">['+channelName+']</span>'
-                            +'<span class="role_name">'+chatMsg.role_name+'</span>'
-                            +'<span class="vip">('+chatMsg.from_vip_level+')</span>'
-                            +'<span class="siliao">对</span>'
-                            +'<span class="role_name">'+chatMsg.sec_chat_role_id+'</span>'
-                            +'<span class="vip">('+chatMsg.receiver_vip_level+')</span>'
-                            +'<span class="siliao">说：</span>'
-                            +'<span class="chat_content">'+chatMsg.chat_content+'</span></li>';
-                    } else {
-                        html = '<li class="chat-'+chatMsg.channel+'" data-ip="'+chatMsg.ip_addr+'">'
-                            +'<span class="time">['+_.formatDate(chatMsg.add_time, 'time')+']</span>'
-                            +'<span class="sp" data-spid="'+chatMsg.spid+'">['+chatMsg.spid+']</span>'
-                            // +'<span class="server" data-server="'+chatMsg.sid+'">['+serverName+chatMsg.sid+']</span>'
-                            +'<span class="server" data-server="'+chatMsg.sid+'">['+chatMsg.sid+']</span>'
-                            +'<span class="channel-'+chatMsg.channel+'">['+channelName+']</span>'
-                            +'<span class="role_name">'+chatMsg.role_name+'</span>'
-                            +'<span class="siliao">对</span>'
-                            +'<span class="role_name">'+chatMsg.sec_chat_role_id+'</span>'
-                            +'<span class="siliao">说：</span>'
-                            +'<span class="chat_content">'+chatMsg.chat_content+'</span></li>';
-                    }
-                    break;
-                default:
-                    html = '<li class="chat-'+chatMsg.channel+'" data-ip="'+chatMsg.ip_addr+'">'
-                        +'<span class="time">['+_.formatDate(chatMsg.add_time, 'time')+']</span>'
-                        +'<span class="sp" data-spid="'+chatMsg.spid+'">['+chatMsg.spid+']</span>'
-                        // +'<span class="server" data-server="'+chatMsg.sid+'">['+serverName+chatMsg.sid+']</span>'
-                        +'<span class="server" data-server="'+chatMsg.sid+'">['+chatMsg.sid+']</span>'
-                        +'<span class="channel-'+chatMsg.channel+'">['+channelName+']</span>'
-                        +'<span class="role_name">'+chatMsg.role_name+'</span>'
-                        +'<span class="chat_content">：'+chatMsg.chat_content+'</span></li>';
-                    break;
-            }
+            let liClass = '';
+            if (senderId == _.options.userId) liClass = "right";
 
+            let html = '<li class="msg-detail '+liClass+'">'+
+                '<div class="msg-detail-avatar">'+
+                    '<img src="../../public/img/avatar-1.jpeg" alt="avatar" srcset=""/>'+
+                '</div>'+
+                '<div class="msg-detail-info">'+
+                    '<p class="info-title">'+
+                        '<span class="username">'+senderName+'</span>'+
+                        '<span class="time">'+time+'</span>'+
+                    '</p>'+
+                    '<div class="info-content">'+
+                        '<span class="word">'+content+'</span>'+
+                    '</div>'+
+                '</div>'+
+            '</li>';
+            
             return html;
         };
+        // 模版 - 聊天室
+        this.templateOfChatRoom = function(data) {
+            return '<div class="layui-col-xs12 msg-chatroom '+data.chatClass+'" data-chat-id="'+data.chatId+'" data-chat-type="'+data.chatType+'">'+
+                '<div class="layui-row msg-chatroom-content">'+
+                    '<div class="layui-col-xs12 content-title">'+
+                        '<h1 class="title-name">'+data.chatName+'</h1>'+
+                    '</div>'+
+                    '<div class="layui-col-xs12 content-msg">'+
+                        '<ul class="content-msg-word"></li>'+
+                        '</ul>'+
+                    '</div>'+
+                    '<div class="layui-col-xs12 content-edit">'+
+                        '<div class="content-edit-toolbar"></div>'+
+                        '<div class="content-edit-word kl-content-edit" contenteditable="true"></div>'+
+                        '<div class="content-edit-submit">'+
+                            '<button class="layui-btn layui-btn-normal layui-btn-sm kl-send-btn">发送</button>'+
+                        '</div>'+
+                    '</div>'+
+                '</div>'+
+            '</div>';
+        }
 
         this.getAjax = function(type, url, params) {
             return new Promise(function(resolve, reject) {
@@ -217,11 +226,89 @@
             var _ = this;
 
             _.getWebsocketClient().then(function(info) {
-                layer.alert(info);
+                layui.use('layer', function(){
+                    layer = layui.layer;
+                    layer.alert(info);
+                });
 
+                $("#msg-container").click(function(e) {
+                    let $target = $(e.target);
+
+                    if ($target.hasClass("kl-send-btn")) {
+                        let $chatRoom = $target.parents(".msg-chatroom");
+                        let content   = $chatRoom.find(".kl-content-edit").text();
+    
+                        // 编辑区清空
+                        if (content) {
+                            $chatRoom.find(".kl-content-edit").text("");
+                        } else {
+                            layui.use('layer', function(){
+                                layer = layui.layer;
+                                layer.msg("发送内容不能为空");
+                            });
+                            return false;
+                        }
+    
+                        // 发送消息 - 发送人
+                        let chatId   = $chatRoom.attr('data-chat-id');
+                        let chatType = $chatRoom.attr('data-chat-type');
+    
+                        let sendMsg = {};
+                        sendMsg.receiver_id = parseInt(chatId);
+                        sendMsg.content     = content;
+    
+                        _.sendMessage(sendMsg, 10001);
+
+                        // 发送消息 - 自己
+                        let sendSelfMsg = {};
+                        sendSelfMsg.chat_id     = chatId;
+                        sendSelfMsg.sender_id   = _.options.userId;
+                        sendSelfMsg.sender_name = _.options.username;
+                        sendSelfMsg.content     = content;
+                        sendSelfMsg.time        = _.formatDate(Math.floor((new Date()).getTime()/1000));
+                        _.privateMsg(sendSelfMsg);
+                    }
+                });
+
+                $("#user-container").click(function(e) {
+                    let $target = $(e.target);
+
+                    let $userLi = $target.parents(".user-brief");
+
+                    if ($userLi.length > 0) {
+                        $userLi.addClass("user-brief-bgcolor").siblings().removeClass("user-brief-bgcolor");
+                        
+                        let chatId    = $userLi.attr('data-chat-id');
+                        let chatType  = $userLi.attr('data-chat-type');
+                        let chatName  = $userLi.find(".title-name").text();
+                        let chatClass = 'chatroom-'+chatType+'-'+chatId;
+
+                        let $refChatRoom = $("#msg-container").find("."+chatClass);
+
+                        if ($refChatRoom.length <= 0) {
+                            let chatRoomData = {};
+                            chatRoomData.chatId    = chatId;
+                            chatRoomData.chatType  = chatType;
+                            chatRoomData.chatName  = chatName;
+                            chatRoomData.chatClass = chatClass;
+
+                            let chatRoomHtml = _.templateOfChatRoom(chatRoomData);
+                            $("#msg-container").append(chatRoomHtml);
+
+                            $refChatRoom = $(chatRoomHtml);
+                        }
+
+                        $("#msg-container").find("."+chatClass).show().siblings().hide();
+                    }
+                });
+                
             }).catch(function(err) {
                 console.log(err);
-                layer.alert(err);
+
+                layui.use('layer', function(){
+                    layer = layui.layer;
+                    layer.alert(err);
+                });
             });
         },
     };
