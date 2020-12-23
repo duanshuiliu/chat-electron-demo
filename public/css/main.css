@@ -21,6 +21,7 @@
 }
 .kl-body-user .header {
   flex: 0 0 40rem;
+  -webkit-app-region: drag;
 }
 .kl-body-user .content {
   flex: 1 0 auto;
