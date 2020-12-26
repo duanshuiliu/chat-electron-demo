@@ -30,8 +30,36 @@
     }
 
     .header {
-        flex: 0 0 40rem;
+        flex: 0 0 60rem;
+        background-color: #393D49;
         -webkit-app-region: drag;
+
+        .header-user {
+            height: 100%;
+            padding: 15rem 0 15rem 20rem;
+            display: flex;
+
+            .user-avatar {
+                flex: 0 0 60rem;
+                height: 100%;
+
+                img {
+                    width: 100%;
+                    border-radius: 100%;
+                }
+            }
+            .user-info {
+                flex: 1 0 auto;
+                padding-left: 15rem;
+                display: flex;
+                align-items: center;
+
+                .info-name {
+                    color: #FFFFFF;
+                    font-size: 20rem;
+                }
+            }
+        }
     }
 
     .content {

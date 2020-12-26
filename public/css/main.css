@@ -20,8 +20,32 @@
   background-color: #c2c2c2 !important;
 }
 .kl-body-user .header {
-  flex: 0 0 40rem;
+  flex: 0 0 60rem;
+  background-color: #393D49;
   -webkit-app-region: drag;
+}
+.kl-body-user .header .header-user {
+  height: 100%;
+  padding: 15rem 0 15rem 20rem;
+  display: flex;
+}
+.kl-body-user .header .header-user .user-avatar {
+  flex: 0 0 60rem;
+  height: 100%;
+}
+.kl-body-user .header .header-user .user-avatar img {
+  width: 100%;
+  border-radius: 100%;
+}
+.kl-body-user .header .header-user .user-info {
+  flex: 1 0 auto;
+  padding-left: 15rem;
+  display: flex;
+  align-items: center;
+}
+.kl-body-user .header .header-user .user-info .info-name {
+  color: #FFFFFF;
+  font-size: 20rem;
 }
 .kl-body-user .content {
   flex: 1 0 auto;
