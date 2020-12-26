@@ -18,19 +18,20 @@
             return new Promise(function(resolve, reject) {
                 if ("WebSocket" in window) {
                     if (_.options.websocketClient) {
-                        resolve("服务器连接成功");
+                        resolve();
                         return true;
                     }
 
-                    var ws = new WebSocket(_.options.websocketUrl, _.options.userId);
+                    let protocol = _.options.userId+"#"+_.options.username;
+                    var ws = new WebSocket(_.options.websocketUrl, protocol);
 
                     ws.onopen = function() {
                         _.options.websocketClient = ws;
-                        resolve("服务器连接成功");
+                        resolve();
 
                         // 发送账号信息
-                        let content = {name: _.options.username};
-                        _.sendMessage(content, 10000);
+                        // let content = {name: _.options.username};
+                        // _.sendWebsocketMsg(content, 10000);
                     };
 
                     ws.onmessage = function (evt) {
@@ -64,14 +65,49 @@
             });
         };
         // 发送消息
-        this.sendMessage = function(content, type = 10001, kind = 1) {
+        this.sendWebsocketMsg = function(content, type = 10001, kind = 1) {
             let sendMsg = {};
             sendMsg.type = type;
             sendMsg.kind = kind;
             sendMsg.data = content;
             
             _.options.websocketClient.send(JSON.stringify(sendMsg));
-        }
+        };
+        this.sendChatMsg = function($target) {
+            let $chatRoom = $target.parents(".msg-chatroom");
+            let content   = $chatRoom.find(".kl-content-edit").text();
+
+            // 编辑区清空
+            if (content) {
+                $chatRoom.find(".kl-content-edit").text("");
+            } else {
+                layui.use('layer', function(){
+                    layer = layui.layer;
+                    layer.msg("发送内容不能为空");
+                });
+                return false;
+            }
+
+            // 发送消息 - 发送人
+            let chatId   = $chatRoom.attr('data-chat-id');
+            let chatType = $chatRoom.attr('data-chat-type');
+
+            let sendMsg = {};
+            sendMsg.receiver_id = parseInt(chatId);
+            sendMsg.content     = content;
+
+            _.sendWebsocketMsg(sendMsg, 10001);
+
+            // 发送消息 - 自己
+            let sendSelfMsg = {};
+            sendSelfMsg.chat_id     = chatId;
+            sendSelfMsg.chat_type   = 2;
+            sendSelfMsg.sender_id   = _.options.userId;
+            sendSelfMsg.sender_name = _.options.username;
+            sendSelfMsg.content     = content;
+            sendSelfMsg.time        = _.formatDate(Math.floor((new Date()).getTime()/1000));
+            _.privateMsg(sendSelfMsg);
+        };
         // 消息处理
         this.handleMessage = function(msg) {
             console.log(msg);
@@ -89,35 +125,76 @@
         // 用户渲染
         this.users = function(users) {
             let $container = $("#user-container");
-            $container.children().remove();
+            // $container.children().remove();
 
             for(var i in users) {
-                if (users[i].id != _.options.userId) {
-                    let html = _.templateOfUser(users[i]);
-                    $container.append(html);
+                if (users[i].chat_id != _.options.userId) {
+                    let userClass = "user-brief-"+users[i].chat_type+"-"+users[i].chat_id;
+                    let $user     = $container.find("."+userClass);
+
+                    if ($user.length <= 0) {
+                        let html = _.templateOfUser(users[i]);
+                        $container.append(html);
+                    }
                 }
             }
         };
         // 消息渲染
         this.privateMsg = function(msg) {
-            let $cotnainer = $("#msg-container");
+            let $userContainer = $("#user-container");
+            let $msgContainer  = $("#msg-container");
 
             let html = _.templateOfPrivateMsg(msg);
-            $cotnainer.find(".chatroom-2-"+msg.chat_id).find(".content-msg-word").append(html);
+
+            let chatRoomClass = "chatroom-"+msg.chat_type+"-"+msg.chat_id;
+            let $chatRoom     = $msgContainer.find("."+chatRoomClass);
+
+            let userClass = "user-brief-"+msg.chat_type+"-"+msg.chat_id;
+            let $user     = $userContainer.find("."+userClass);
+
+            if ($user.length <= 0) {
+                let userData = {};
+                userData.chat_id   = msg.chat_id;
+                userData.chat_type = msg.chat_type;
+                userData.chat_name = msg.sender_name;
+
+                let html = _.templateOfUser(userData);
+                $userContainer.append(html);
+            }
+
+            $user = $userContainer.find("."+userClass);
+            
+            if ($chatRoom.length <= 0) {
+                let chatId    = $user.attr('data-chat-id');
+                let chatType  = $user.attr('data-chat-type');
+                let chatName  = $user.find(".title-name").text();
+
+                let chatRoomData = {};
+                chatRoomData.chatId    = chatId;
+                chatRoomData.chatType  = chatType;
+                chatRoomData.chatName  = chatName;
+
+                let chatRoomHtml = _.templateOfChatRoom(chatRoomData);
+                $msgContainer.append(chatRoomHtml);
+            }
+
+            $msgContainer.find("."+chatRoomClass).find(".content-msg-word").append(html);
         };
         // 模板 - 用户
         this.templateOfUser = function(data) {
-            return '<li class="user-brief" data-chat-id="'+data.id+'" data-chat-type="2">'+
+            let userClass = "user-brief-"+data.chat_type+"-"+data.chat_id;
+
+            return '<li class="user-brief '+userClass+'" data-chat-id="'+data.chat_id+'" data-chat-type="'+data.chat_type+'">'+
                 '<div class="user-avatar">'+
                     '<img src="../../public/img/avatar-1.jpeg" alt="avatar" srcset=""/>'+
                 '</div>'+
                 '<div class="user-info">'+
                     '<div class="info-title">'+
-                        '<span class="title-name">'+data.name+'</span>'+
-                        '<span class="title-time">19:30</span>'+
+                        '<span class="title-name">'+data.chat_name+'</span>'+
+                        '<span class="title-time"></span>'+
                     '</div>'+
                     '<div class="info-msg">'+
-                        '<p>hello world 1</p>'+
+                        '<p></p>'+
                     '</div>'+
                 '</div>'+
             '</li>';
@@ -156,7 +233,9 @@
         };
         // 模版 - 聊天室
         this.templateOfChatRoom = function(data) {
-            return '<div class="layui-col-xs12 msg-chatroom '+data.chatClass+'" data-chat-id="'+data.chatId+'" data-chat-type="'+data.chatType+'">'+
+            let chatClass = 'chatroom-'+data.chatType+'-'+data.chatId;
+
+            return '<div class="layui-col-xs12 msg-chatroom '+chatClass+'" data-chat-id="'+data.chatId+'" data-chat-type="'+data.chatType+'">'+
                 '<div class="layui-row msg-chatroom-content">'+
                     '<div class="layui-col-xs12 content-title">'+
                         '<h1 class="title-name">'+data.chatName+'</h1>'+
@@ -226,47 +305,24 @@
             var _ = this;
 
             _.getWebsocketClient().then(function(info) {
-                layui.use('layer', function(){
-                    layer = layui.layer;
-                    layer.alert(info);
-                });
-
                 $("#msg-container").click(function(e) {
                     let $target = $(e.target);
 
                     if ($target.hasClass("kl-send-btn")) {
-                        let $chatRoom = $target.parents(".msg-chatroom");
-                        let content   = $chatRoom.find(".kl-content-edit").text();
-    
-                        // 编辑区清空
-                        if (content) {
-                            $chatRoom.find(".kl-content-edit").text("");
-                        } else {
-                            layui.use('layer', function(){
-                                layer = layui.layer;
-                                layer.msg("发送内容不能为空");
-                            });
-                            return false;
-                        }
-    
-                        // 发送消息 - 发送人
-                        let chatId   = $chatRoom.attr('data-chat-id');
-                        let chatType = $chatRoom.attr('data-chat-type');
-    
-                        let sendMsg = {};
-                        sendMsg.receiver_id = parseInt(chatId);
-                        sendMsg.content     = content;
-    
-                        _.sendMessage(sendMsg, 10001);
+                        _.sendChatMsg($target);
+                    }
+                });
+                $("#msg-container").keydown(function(e) {
+                    let keyCode = e.keyCode;
+                    let $target = $(e.target);
 
-                        // 发送消息 - 自己
-                        let sendSelfMsg = {};
-                        sendSelfMsg.chat_id     = chatId;
-                        sendSelfMsg.sender_id   = _.options.userId;
-                        sendSelfMsg.sender_name = _.options.username;
-                        sendSelfMsg.content     = content;
-                        sendSelfMsg.time        = _.formatDate(Math.floor((new Date()).getTime()/1000));
-                        _.privateMsg(sendSelfMsg);
+                    let $parentEle = $target.parents(".msg-chatroom");
+                    if ($parentEle.length >= 1) {
+                        switch (keyCode) {
+                            case 13:
+                                _.sendChatMsg($parentEle.find(".kl-send-btn"));
+                                break;
+                        }
                     }
                 });
 
@@ -290,18 +346,14 @@
                             chatRoomData.chatId    = chatId;
                             chatRoomData.chatType  = chatType;
                             chatRoomData.chatName  = chatName;
-                            chatRoomData.chatClass = chatClass;
 
                             let chatRoomHtml = _.templateOfChatRoom(chatRoomData);
                             $("#msg-container").append(chatRoomHtml);
-
-                            $refChatRoom = $(chatRoomHtml);
                         }
 
                         $("#msg-container").find("."+chatClass).show().siblings().hide();
                     }
                 });
-                
             }).catch(function(err) {
                 console.log(err);
 
