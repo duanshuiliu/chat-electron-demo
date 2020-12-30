@@ -76,6 +76,7 @@
         this.sendChatMsg = function($target) {
             let $chatRoom = $target.parents(".msg-chatroom");
             let content   = $chatRoom.find(".kl-content-edit").text();
+            content = _.encodeHtml(content);
 
             // 编辑区清空
             if (content) {
@@ -93,20 +94,22 @@
             let chatType = $chatRoom.attr('data-chat-type');
 
             let sendMsg = {};
+            sendMsg.type        = parseInt(chatType);
             sendMsg.receiver_id = parseInt(chatId);
             sendMsg.content     = content;
 
-            _.sendWebsocketMsg(sendMsg, 10001);
+            let sendMsgType = 10001;
+            _.sendWebsocketMsg(sendMsg, sendMsgType);
 
             // 发送消息 - 自己
             let sendSelfMsg = {};
             sendSelfMsg.chat_id     = chatId;
-            sendSelfMsg.chat_type   = 2;
+            sendSelfMsg.chat_type   = chatType;
             sendSelfMsg.sender_id   = _.options.userId;
             sendSelfMsg.sender_name = _.options.username;
             sendSelfMsg.content     = content;
             sendSelfMsg.time        = _.formatDate(Math.floor((new Date()).getTime()/1000));
-            _.privateMsg(sendSelfMsg);
+            _.renderMsg(sendSelfMsg);
         };
         // 消息处理
         this.handleMessage = function(msg) {
@@ -116,14 +119,18 @@
                 case 10000:
                     _.users(msg.data["users"]);
                     break;
-                // 私聊
+                // 聊天
                 case 10001:
-                    _.privateMsg(msg.data);
+                    _.renderMsg(msg.data);
+                    break;
+                // 用户离开
+                case 10002:
+                    _.users(msg.data["users"], true);
                     break;
             }
         };
         // 用户渲染
-        this.users = function(users) {
+        this.users = function(users, isDelete = false) {
             let $container = $("#user-container");
             // $container.children().remove();
 
@@ -132,19 +139,29 @@
                     let userClass = "user-brief-"+users[i].chat_type+"-"+users[i].chat_id;
                     let $user     = $container.find("."+userClass);
 
-                    if ($user.length <= 0) {
-                        let html = _.templateOfUser(users[i]);
-                        $container.append(html);
+                    if (isDelete) {
+                        if ($user.length >= 1) $user.remove();
+
+                        // 删除聊天框
+                        let chatRoomClass = "chatroom-"+users[i].chat_type+"-"+users[i].chat_id;
+                        let $chatRoom     = $("#msg-container").find("."+chatRoomClass);
+
+                        if ($chatRoom.length >= 1) $chatRoom.remove();
+                    } else {
+                        if ($user.length <= 0) {
+                            let html = _.templateOfUser(users[i]);
+                            $container.append(html);
+                        }
                     }
                 }
             }
         };
         // 消息渲染
-        this.privateMsg = function(msg) {
+        this.renderMsg = function(msg) {
             let $userContainer = $("#user-container");
             let $msgContainer  = $("#msg-container");
 
-            let html = _.templateOfPrivateMsg(msg);
+            let html = _.templateOfRenderMsg(msg);
 
             let chatRoomClass = "chatroom-"+msg.chat_type+"-"+msg.chat_id;
             let $chatRoom     = $msgContainer.find("."+chatRoomClass);
@@ -199,8 +216,8 @@
                 '</div>'+
             '</li>';
         };
-        // 模板 - 私聊消息
-        this.templateOfPrivateMsg = function(msg) {
+        // 模板 - 消息
+        this.templateOfRenderMsg = function(msg) {
             let time       = '';
             let senderId   = 0;
             let senderName = '';
@@ -297,6 +314,20 @@
             }
 
             return result;
+        };
+        // 字符转义
+        this.encodeHtml = function(s) {
+            s = (s != undefined) ? s : "";
+
+            let reg = /"|&|'|<|>|[\x00-\x20]|[\x7F-\xFF]|[\u0100-\u2700]/g;
+
+            return (typeof s != "string") ? s : 
+                s.replace(reg, function($0){
+                    var c = $0.charCodeAt(0), r = ["&#"];
+                    c = (c == 0x20) ? 0xA0 : c;
+                    r.push(c); r.push(";");
+                    return r.join("");
+                });
         };
     };
 
