@@ -71,9 +71,23 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 .kl-body-user .content .content-box ul li.user-brief .user-avatar img {
   width: 100%;
+}
+.kl-body-user .content .content-box ul li.user-brief .user-avatar .number {
+  display: none;
+  position: absolute;
+  color: white;
+  background-color: red;
+  font-size: 12rem;
+  line-height: 12rem;
+  border-radius: 100%;
+  text-align: center;
+  left: 41rem;
+  top: 5rem;
+  padding: 2rem 3rem;
 }
 .kl-body-user .content .content-box ul li.user-brief .user-info {
   flex: 1 0 auto;

@@ -37,3 +37,7 @@ $("#win-toggle-top").click(function() {
         $target.removeClass("icon-pin_slash").addClass("icon-pin");
     }
 });
+
+$("#msg-container").on("kl-frame", function() {
+    ipcRenderer.send("window", "frame");
+});

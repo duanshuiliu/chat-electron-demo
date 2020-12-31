@@ -180,6 +180,14 @@
             }
 
             $user = $userContainer.find("."+userClass);
+
+            if (!$user.hasClass("user-brief-bgcolor")) {
+                let $number = $user.find(".number");
+                let num     = parseInt($number.text());
+
+                $number.text(num+1);
+                $number.show();
+            }
             
             if ($chatRoom.length <= 0) {
                 let chatId    = $user.attr('data-chat-id');
@@ -195,7 +203,13 @@
                 $msgContainer.append(chatRoomHtml);
             }
 
-            $msgContainer.find("."+chatRoomClass).find(".content-msg-word").append(html);
+            let $msgDisplaySection = $msgContainer.find("."+chatRoomClass).find(".content-msg-word");
+            let height = $msgDisplaySection.prop('scrollHeight');
+
+            $msgDisplaySection.append(html);
+            $msgDisplaySection.scrollTop(height);
+            
+            $msgContainer.trigger("kl-frame");
         };
         // 模板 - 用户
         this.templateOfUser = function(data) {
@@ -204,6 +218,7 @@
             return '<li class="user-brief '+userClass+'" data-chat-id="'+data.chat_id+'" data-chat-type="'+data.chat_type+'">'+
                 '<div class="user-avatar">'+
                     '<img src="../../public/img/avatar-1.jpeg" alt="avatar" srcset=""/>'+
+                    '<span class="number">0</span>'+
                 '</div>'+
                 '<div class="user-info">'+
                     '<div class="info-title">'+
@@ -364,6 +379,8 @@
 
                     if ($userLi.length > 0) {
                         $userLi.addClass("user-brief-bgcolor").siblings().removeClass("user-brief-bgcolor");
+                        $userLi.find(".number").text("0");
+                        $userLi.find(".number").hide();
                         
                         let chatId    = $userLi.attr('data-chat-id');
                         let chatType  = $userLi.attr('data-chat-type');

@@ -81,6 +81,9 @@ ipcMain.on("window", (event, command) => {
         case 'toggle-top':
             win.setAlwaysOnTop(!win.isAlwaysOnTop());
             break;
+        case 'frame':
+            win.flashFrame(true);
+            break;
     }
 })
 
